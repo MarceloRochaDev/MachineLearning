@@ -236,3 +236,28 @@ obs: mean_absolute_error verifica a distancia média entre os dados reais e os d
 .pyod:
 	-biblioteca pronta pra detectar outlier
 	-pode passar varias variaveis
+
+
+
+----------- deep learning:
+
+.Redes neurais convolucionais (CNN):
+	- Usado pra visão computacional(ex: robo detectar objeto,carros autônomos, reconhecimento facial)
+	- Não usa todas as entradas
+	- Usa a rede neural tradicional, mas primeiro transforma os dados na entrada, pegando as características mais importantes
+	- Aplica o filtro de convolução: diminui a dimensão da matriz pelo operador de convolução
+	- Pooling: É usado após a convolução, pra extrair as características mais relevantes(max,min,media) e diminuir mais a dimensão
+	- Flatterning: É usado após o Pooling para colocar os dados na forma unidimensional para ser submetido a rede neural tradicional
+
+.Redes neurais recorrentes(RNN):
+	- Dados sequencias (ex: algo que acontece sequencialmente no tempo)
+	- Prever a próxima ação
+	- Pode ter varias entradas e 1 saída, ou vice-versa
+	- Redes neurais com Loops que permite que a informação persista
+	- Assim, a cada tempo t, ele pega as informações que entraram em t e as que persistiram do t-1 (que ele passou pra ele mesmo) (chamado de h, estado interno)
+	- Os pesos do estado recorrente tbm são alterados
+	- O estado interno e as entradas são combinadas para gerar o estado atual
+	- Quanto maior o estado interno, maior a capacidade de armazenar infos -> melhor e mais custoso 
+	- Treino ruidoso devido ao Vanishing/Exploding gradiente
+	- Parcialmente arrumado pelo LSTM -> celulas de memoria+deicide quais informações serão mantidas (forget gate) + quais serão passadas
+	
