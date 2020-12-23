@@ -1,0 +1,238 @@
+.OBS: O fit em transform é so na primeira vez, pra ele se adaptar a base de dados. Dps pode passar o transform sem o fit(tipo no scaler)
+.OBS: Em todos métodos, variar o teste, retirando e testando as possibilidades do labelencoder, scaler, imputer, onehotencoder,..
+.OBS; ctrl + i na função: mostra a biblioteca dela
+.OBS: Aonde usei o imputer, trocar por :
+	from sklearn.impute import SimpleImputer
+	imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+.OBS: o .values transforma em np array
+.OBS: o reshape é usado ou pra n zera (no escalonamento) ou pra coloca na forma certa (na regressao)
+.OBS: a função relu deixa passar valores positivos e zera negativos
+
+.Algoritmo Naive Bayes
+	-Transforma dados historicos em probabilidades e classifica os novos dados a partir destas.
+	-Usado no geral pra classificar textos
+	.Correção laplaciana -> adiciona registros na bases de dados para que não ocorra probabilidade nula
+	.Outra forma: Raio : pega o elemento e, a priori (pela base de dados) é dado probabilidade de ser algo pra achar a probabilidade posteriori
+	.Vantagens: Rapido,Simplicidade de interpretação, trabalha com altas dimensoes, boas previsoes em bases pequenas
+	.Desvantagens: Combinação de características independentes (considera que cada atributo não depende do outro)
+
+.Arvore de decisão
+	-Cria-se, a partir de métodos de atributos mais relevantes (mais organizados/mais relacionais/menos entrópicos), uma àrvore de possibilidades
+	-Poda : Eliminação de atributos não relevantes, tira adaptações muito específicas da àrvore ao treinamento(overfitting)
+	.Vantagens: Fácil interpretação, não precisa de normalização ou padronização, rápido pra calssificar
+	.Desvantagens: Geração de árvores muito complelxas (overfitting), pequenas mudanças pode mudar a árvore (poda pode ajudar),problema NP-completo pra construir a árvore (complexo)
+	-Antigo
+	-Pra melhorar o desempenho: random forest
+
+Por enquanto, basicamente, no uso entre um metodo e outro, só se muda a biblioteca do classificador, sua importação e parâmetros para os memos dados pré-processados, podendo variar o pre-processamento para melhorar o resultado
+
+.Algoritmo OneR
+	-Um atributo faz todo trabalho
+.Algoritmo PRISM (cn2learn)
+	-Uma regra que classifica uma propriedade da classe (ex: 1 unica regra que classifica se o rico de credito é alto)
+	-"Se ?(atributo aqui) então classificador= (ex risco alto)", faz isso até criar um monte de regras majoritárias
+.Majority learner: base line classifier -> ele classifica pela maioria (faz um count), entao se o resultado que tu está obtendo por um método é inferior ao deste, use este pois não tem sentido usar outro que consegue ser menos eficiente
+		   Ou seja, os classificadores só valem a pena se seu acerto for superior à contagem
+
+.KNN
+	- Objetivo é encontrar os K vizinhos mais próximos
+	- Não cria modelo -> métodos baseados em instância armazenam os exemplos de treinamento, então pra cada classificação ele verifica a proximidade do valor com os de treino
+	- A distância é utilizando minimos quadrados(acho) (distancia euclidiana)
+	- Usado em recomendação de filme(filtragem colaborativa) (a partir da sua nota e de outras pessoas sobre um filme, ele pega as mais proximas de vc e te recomenda os filmes dela)
+	- Tem que usar dados na mesma escala -> é feita uma normalização(pelos valores maximos e min) ou padronização (pela media e desvio padrao)
+	.Vantagens: Simples e poderoso, indicado quando o relacionamento entre as características é complexo
+	.Desvantagens: k pequeno: outliers podem prejudicar, k grande:overfitting, recomenda-se k=3 ou 5, é lento para fazer as previsões
+
+.Regressão logística
+	- Aproximação dos dados por uma sigmoide (reta com extremos horizontais, parecendo um "s" pra adequar os dados nos extremos) (1/(1+e^-y)) 
+	- Tem a função de achar parâmetros para a função de forma que a função erro tenha o menor minimo global->Descida do gradiente
+
+.Máquina de vetores de suporte (SVM)
+	- No geral, supera outros algoritmos
+	- Usado em tarefas complexas: reconhecimento de voz, imagem, caracteres
+	- Aprende hiperplanos de separação com margem máxima
+	- Parametro c, quanto maior, maior a minimização de erro
+	- Kernel Trick -> muda os dados para que as superficies não linearmente separaveis sejam separaveis linearmente, mudando de dimensão, por exemplo
+	- Configurar, entao, o tipo de Kernel e c
+	- Consegue criar novos atributos
+	- Aplicar escalonamento para não demorar muito mais o processamento
+	.Vantagens: Pouco influenciado por outliers, usado na classificação e regressão, aprende coisas não presentes nos dados originais,mais facil de usar que redes neurais
+	.Desvantagens: Testar várias combinações de parâmetros, lento, caixa preta (n da pra visualizar/interpretar o resultado)
+
+.Redes neurais:
+	- Quando o problema não possui um algoritmo definido (reconhecimento facial, linguagem natural,..)
+	- Quando tem muitos dados e problemas complexos
+	- Tem q ser escalonada (pra acelera processamento/fzr corretamente o processo)
+	- Tenta imitar o sistema nervoso humano na aprendizagem; parecido com a troca de info em uma rede biológica
+	- Um neurônio é ativado somente se a entrada for maior que um limiar
+	- Às entradas são atribuidos pesos, que são multiplicado pela sua respectiva entrada dando a função soma
+	- Essa função soma é passada pra f(função de ativação), que determina se ativa ou não o neurônio. 
+ 	- f pode ser, por ex, a função degrau
+	- Os pesos são sinapses
+	- Se o peso for positivo, é considerado sinapse excitadora
+	- Se o peso for negativo, sinapse inibidora
+	- A rede neural aprende o melhor conjunto de pesos pra classificação
+	- O erro é calculado e um novo peso pro atributo(se for 1 camada) é calculado pelo peso atual + taxa de aprendizagem*entrada*erro
+	- O neurônio é chamado de perceptron (historicamente é de 1 camada)
+	- Em aplicações linearmenete separáveis, 1 camada da pra resolver
+	- Quando a aplicação não é linearmente separável, é utilizado multicamada, chamada de camada oculta
+	- As entradas tem seus pesos para cada atributo em cada camada, em cada uma é feita a soma e a ativação e retornado um valor que será o peso para a saída dessa camada, que entrará com seu respectivo peso, ao fim, numa função soma e de ativação
+	- Funções de ativação: degrau, sigmoide, tangente hiperbolica (que usa tbm valores negativos), dentre outras
+	- Algoritmo:(vai com o feedforward(calculando as saídas) e volta com o back propagation(atualizando os pesos)) Inicialização com pesos aleatorios; calcula as saídas; calcula o erro(cost function); enquanto o erro não for pequeno ele atualiza os pesos (backpropagation) e recalcula o erro
+	- O erro é calculado pelo gradiente, derivada, delta, backpropagation, learning rate, momentum
+	- O gradiente é usado para saber em quanto atualizar os pesos (pelo minimo global do erro)
+	- Delta saída= derivada da ativação*erro
+	- Delta escondido= Derivada da ativação*peso*delta saída
+	- novo peso= peso atual*momento + entrada*delta (seu da camada respectiva, se for a oculta, usa delta oculto, se for da de saida, usa delta de saida)*taxa de aprendizagem
+	- Objetivo -> atualizar os pesos de forma que o erro tenda a ir pro mínimo global
+	- Taxa de aprendizagem: O quão rápido o algoritmo vai aprender; alto: convergência rápida mas pode perder o minimo global; baixo: convergência lenta, mas tem mais chances de chegar no mínimo global
+	- Momento: visa escapar do minimo local; alto: aumenta a velocidade de convergência;baixo:pode evitar minimos locais
+	- Bias (viés): adiciona atributos adicionais nas entradas com novos respectivos pesos
+	- Maneiras eficientes de calculo de erro: Mean square error(MSE) e root mean square error (RMSE)
+	- Esses métodos calculam a media da diferença entre o valor esperado e o valor obtido, e os erros maiores contam mais que erros menores
+	- Saídas com mais neurônios são codificadas para que uma combinação destes dê uma classe específica(ex bits abcd: 1000(a),0100(b),0010(c))
+	- Deep learning: Duas ou mais camadas escondidas; são usadas outras técnicas, funções de ativação,problema do gradiente desaparecendo
+	- Deep learning: redes neurais convolucionais, recorrentes e keras,theano e tensorflow e uso de GPU
+	- Camada oculta: Pode-se começar usando (Entrada+saida)/2 neurônios ocultos; mínimo de 1 neurônio pra cada classe
+	- Descida do gradiente estocastico: Calcula o erro registro por registro atualizando seu respectivo peso; ajuda a previnir minimos locais;mais rápido
+	- Descida do Batch gradiente: carrega todos registros e calcula o erro
+	- Descida do mini batch gradiente: Carrega parte dos registros e calcula o erro e vai fazendo isso (batch size)
+	
+	-n° de neuronios na camada oculta: (numero de atributos + valores de saida)/2
+
+--- Validação de algoritmos
+
+.K-fold cross validation (validação cruzada):
+	- Divide a base em K-partes, usa uma como teste as outras como treinamento, e depois vai trocando a base de teste até todas as bases terem sido uma vez de teste , e o acerto é a média dos acertos
+	- Assim, registros que seriam importantes para o treinamento são colocados no treinamento pra melhorar os resultados
+	- K=10 é bem usado
+	- indicado tbm pra bases com poucos registros
+	.stratifiedkfold -> mais recomendado
+
+. Pra fazer uma boa avaliação:
+	- Usar o stratifiedkfold
+	- Fazer 30 testes com cada classificador
+	- Montar a planilha no excel, e dps o rankeamento (no arquivo testes estatisticos acho) 
+	---- a partir daqui, a abordagem é mais pra comprovação científica/publicação de artigos
+	- Copia o rank e coloca em outra panilha
+	- Exportar a planilha como csv
+	- Abrir em um editor de texto
+	- Substituição multipla de "," por "." e';' por ','
+	- Avaliação dessa tabela pela linguagem R 
+	- Teste de friedman(se existe diferença entre os dados retorna 0), teste de nemenyi (se existe diferença estatística entre os dados)
+	- No console do R digitar:
+		require(TStools)
+		dados = read.csv("caminho da planilha de rank exportada como csv e ajustada")
+		matriz = as.matrix(dados)
+		TStools::nemenyi(matriz, conf.int = 0.95, plottype="vline")
+	- Pra analisar os resultados: 
+				friedman:0 -> são diferentes
+				comparação 2 a 2: pega o rank do que quer verificar, subtrai do rank do que quer comparar, se der menor q CD(distancia critica) não pode afirmar que um é melhor que outro, se for maior, pode-se afirmar que é
+					
+
+.Combinação de classificadores:
+	-Estratégias:
+		-all agree(unanimity): todos classificadores tem que concordar com a decisão
+		-50%+1(simple major): metade dos classificadores + 1 tem que concordar com a decisão
+		-most votes(plurality): maior quantidade de votos decide
+
+
+
+--------- regressão
+obs: .fit pra treina, no .predict usa os testes
+obs: mean_absolute_error verifica a distancia média entre os dados reais e os dados previstos
+.regressão linear :
+	- ajuste dos parametros para menor erro
+	- minimo erro quadrático 
+	- descida do gradiente
+	-correlação: 1 perfeita,0.7forte,0.5 moderada,-1 perfeita,...
+
+.regressao polynomial:
+	- usa o PolynomialFeatures
+	- pega os dados de atributos e eleva ao quadrado, dps joga esses dados no linear regression .fit pra treinar, e no .predict pra testar
+
+.regressao arvore de decisao:
+	- mesma coisa que classificador, só que ao fim da árvore atribui valor (acho q é linear)
+	.com random forest: Usa várias árvores para tomar a decisão, no caso da regressao, usando a média dos valores que as avores deu
+
+
+------ associação
+
+.suporte= quanto que o registro aparece na base de dados (suporte alto-> constroi regras usando o registro que aparece mais na base de dados, e vice versa)
+	ex: suporte de 0.8-> o algoritmo busca registros que aparecem em mais de 80% das transações
+.confiança=numero de registros que tem os dados x e y dividido por x
+
+.algoritmo:
+	1) define o suporte e pega os items que satisfazem ele
+	2) combina eles entre si (vê a frequência em que, de dois a dois, eles aparecem juntos) e descarta se o suporte resultante for menor que o especificado em 1
+	3) combina eles de 3 a três, e assim sucessivamente (descartando se o suporte for menor que o especificado em 1)
+	4) define todas as regras possíveis a partir dos dados gerados do item 2 em diante
+	5) ve pra essas regras quais tem a confiaça maior que a definida pelo usuario
+	6) faz o lift (confiança/suporte de y == "clientes que compram x tem n vezes mais chances de comprarem y")
+	7) quanto maior o lift, melhor a regra
+.obs: definição do suporta pra base dados grande: ex: quero produtos vendidos 4x ao dia, 4*7 por semana, divide pelo total(se o total for por semana)
+
+
+----- agrupamento (pra direciona propagandas pra determinados grupos, por exemplo)
+.OBS: Escalonar os dados
+.k-means:
+	-inicializa centroides (clusters)
+	-os centroides vao aos centros de cada grupo de dados
+	-para cada ponto do conjunto, é medida a distância aos centroides
+	-depois de feito, é calculada a média de cada grupo e o centroide é reposicionado nessa média de cada grupo
+	-é feito repetidamenteo esse processo
+	.k-means++: reduz a prob de inicialização de centroides ruins; seleciona centroides distantes uns dos outros
+	-numero de clusters: -se tiver conhecimento previo do grupo;se n tiver= sqrt(N/2), n= quantidade de registros
+	-Elbow method: testa vários valores de clusters -> somatorio das distancias (wcss) aos centros e adiciona clusters até ter o menor wcss
+		      - escolhe o numero de clusters baseado na distância entre cada resultado;n pode ser alta nem mt baixa
+
+.hierarquico:
+	- Inicialmente, cada registro é considerado um cluster
+	- São agrupados dois a dois os clusters mais próximos
+	- No fim é gerado 1 único cluster 
+	- os dados são mostrados em um dendrograma e, traçando uma reta horizontal, o numero de cruzamentos perpendiculares é o número de clusters
+
+.DBSCAN:
+	- Agrupa pontos similares no mesmo espaço
+	- Tenta encontrar pontos separados por uma distância menor que um limiar (threshold distance)
+	- Inicializa em um ponto e seleciona todos dentro de um raio, nesses selecionados é feita a mesma coisa até não ter nenhum registro dentro do raio de qualquer um dos pontos, definindo uma classe
+	- Encontra padroes não lineares; robusto contra outliers
+
+
+
+---- redução de dimensionalidade (reduz o número de atributos que serão analisados pra, por ex, diminuir o tempo de processamento)
+.OBS: Seleção de características = seleciona os atributos mais importantes da base
+.OBS: Extração de características = Uni/combina atributos semelhantes na base para formar outro
+
+.PCA:
+	-Se o problema for linearmente separável
+	-Identifica correlação entre variáveis
+	-Não supervisionado
+	- usa n_components = None e dps pca.explained_variance_ratio_, soma os valores disso até dar uma boa porcentagem da base dados e usa até o valor que somou
+
+.LDA:
+	-Se o problema for linearmente separável
+	-Além de encontra os componentes principais, ele encontra o eixo que mazima a separação entre múltiplas classes
+	-Supervisionado
+	-Baseado na classe, então o número final de atributos tem que ser menor que o número de classes
+
+.Kernel PCA:
+	-Se o problema não for linearmente separável
+	- Versão do PCA em que os dados são colocados em uma maior dimensão pelo kernel trick
+
+
+---- detecção de outliers
+.OBS: outliers = valores anormais, fora do padrão/afastados da média
+      causas: acaso; erro de preenchimento; fraudes
+      tratamento: remover o registro; não fzr nd; substituir
+
+.boxplot: 
+	- quando se tem 1 variável
+	- Visualiza os gráficos no boxplot, dps captura eles
+
+.dispersão:
+	-quando se tem 2 variáveis
+
+.pyod:
+	-biblioteca pronta pra detectar outlier
+	-pode passar varias variaveis
